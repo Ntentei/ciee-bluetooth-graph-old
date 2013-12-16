@@ -25,71 +25,47 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
-		
-		
+	
         //final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
         if (mBluetoothAdapter == null) {
-        	setTitle("blue tooth adapter is null");
-            //finish();
+        	setTitle("No bluetooth adaptor on this device");
             return;
         }
-        
-        
-        
         else
         {
-        	setTitle("blue tooth initiated");
+        	setTitle("Bluetooth initiated");
         	
         	if (!mBluetoothAdapter.isEnabled())
         	{
-        		setTitle("BT not enabled");
+        		setTitle("Bluetooth not enabled");
         		
         	    if(!mBluetoothAdapter.isEnabled())
         	    {
-        	        Intent i=new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        	        Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         	        startActivity(i);
         	    }
         	}
         	
         	{
-        		setTitle("BT enabled");
-        		
-        		/*
-        		final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        		    public void onReceive(Context context, Intent intent) {
-        		        String action = intent.getAction();
-        		        // When discovery finds a device
-        		        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-        		            // Get the BluetoothDevice object from the Intent
-        		            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-        		            // Add the name and address to an array adapter to show in a ListView
-        		            setTitle(device.getName());
-        		        }
-        		    }
-        		};
-
-        		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        		registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-        		*/
-        	
-        		//mBluetoothAdapter.startDiscovery();
-        		
-        		
-        		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        	
-        		
+        		setTitle("Bluetooth enabled");
+        		       		
+        	    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        	        		
         		// If there are paired devices
         		if (pairedDevices.size() > 0) {
         	
-        			for (Iterator<BluetoothDevice> iterator = pairedDevices.iterator(); iterator
-						.hasNext();) {
-        			}
+        			setTitle("Paired device(s) found");
+        			
+        		    for (BluetoothDevice device : pairedDevices) {
+        		        
+        		        setTitle(device.getName() + " | " + device.getAddress());
+        		    }
         		}
         		else
         		{
-        			setTitle("paried device = 0");
+        			setTitle("No paired device(s)");
         		}
         		
         		
@@ -113,3 +89,4 @@ public class MainActivity extends Activity {
 	}
 
 }
+
