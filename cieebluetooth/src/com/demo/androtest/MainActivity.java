@@ -11,6 +11,14 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -113,6 +121,7 @@ public class MainActivity extends Activity {
 		            int read = 0;
 		            byte[] singleChar = new byte[1];
 		            
+		            
 		            do
 		            {
 		                try
@@ -176,7 +185,39 @@ public class MainActivity extends Activity {
 		                }
 		            }
 		            while (read > 0);
-					
+		         
+		            
+
+		            ///set data to database
+		            Thread thread = new Thread()
+		            {
+		                @Override
+		                public void run() {
+		                    
+				            Log.e("MSG", "Start HTTP GET in a new thread");
+		                	
+							HttpClient client = new DefaultHttpClient();  
+							String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=change88xx";
+							HttpGet get = new HttpGet(getURL);
+							try {
+								HttpResponse responseGet = client.execute(get);
+							    HttpEntity resEntityGet = responseGet.getEntity();  
+							    if (resEntityGet != null) {  
+							        String response = EntityUtils.toString(resEntityGet);
+							        Log.e("GET RESPONSE", response);
+							    }
+							} catch (ClientProtocolException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+		                }
+		            };
+		            
+		            thread.start();
+		            
+	            
+		            ///backup code of BT communication-------------------------------------------------------------------------
 		            
 					/*
 					 * 
