@@ -111,14 +111,64 @@ public class MainActivity extends Activity {
 					Log.e("STATE", "InputStream acquired");
 					
 		            int read = 0;
-		            byte[] buffer = new byte[1024];
+		            byte[] singleChar = new byte[1];
+		            
 		            do
 		            {
 		                try
 		                {
-		                    read = input.read(buffer);
-		                    String data = new String(buffer, 0, read);
-		                    Log.e("DATA", data);
+		                	read = input.read(singleChar, 0, 1);
+		                	String data = new String(singleChar, 0, read);
+		                	
+		                	Log.e("METADATA", data);
+		                	
+		                	if(data.equals("~"))
+		                	{
+		                		String xData = "";
+		                		
+		                		Log.e("XXX", "**************BEGIN****************");
+		                		
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+		                		
+			                	read = input.read(singleChar, 0, 1);
+			                	data = new String(singleChar, 0, read);
+			                	xData += data;
+			                	
+			                	Log.e("DATA", xData); //sample output: 01810xxxx
+			                	
+			                	Log.e("XXX", "**************END******************");
+		                	}
+
 		                }
 		                catch(Exception ex)
 		                {
