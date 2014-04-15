@@ -223,7 +223,7 @@ public class MainActivity extends Activity {
 							            updateConsole("Sending to Cloud Server...");						            
 					                	
 										HttpClient client = new DefaultHttpClient();  
-										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxData;
+										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxxData;
 										HttpGet get = new HttpGet(getURL);
 										try {
 											HttpResponse responseGet = client.execute(get);
