@@ -7,11 +7,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,11 +36,16 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +63,19 @@ public class MainActivity extends Activity {
 	String xData;
 	String xxxData;
 	
+	int numberOfPoint = 100;
+	
+	ArrayList<Integer> xArray = new ArrayList<Integer>();
+	ArrayList<Float> yArray = new ArrayList<Float>();
+	
+    private GraphicalView mChart;
+    private XYMultipleSeriesDataset mDataset = new XYMultipleSeriesDataset();
+    private XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
+    private XYSeries mCurrentSeries;
+    private XYSeriesRenderer mCurrentRenderer;
+    
+    Timer timer;
+
 	
 	private static int countLines(String str){
 		   String[] lines = str.split("\r\n|\r|\n");
@@ -69,16 +95,74 @@ public class MainActivity extends Activity {
 		scroll.fullScroll(View.FOCUS_DOWN);  
 	}
 	
+    private void initChart() {
+        mCurrentSeries = new XYSeries("Sample Data");
+        mDataset.addSeries(mCurrentSeries);
+        mCurrentRenderer = new XYSeriesRenderer();
+        mRenderer.addSeriesRenderer(mCurrentRenderer);
+    }
+
+    private void addSampleData() {
+        
+    }
+	
+    class RemindTask extends TimerTask {
+
+        @Override
+        public void run() {
+        	
+        	Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+
+            float zzz = yArray.remove(0);
+            yArray.add((float) (zzz + Math.random() * 5 - 2.5));
+            
+            mCurrentSeries.clear();
+            
+            for(int i = 0; i < numberOfPoint; i++)
+            {
+            	mCurrentSeries.add(xArray.get(i), yArray.get(i));  
+            }
+            
+            mChart.repaint();
+
+        }
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
 		
 		scroll = (ScrollView) findViewById(R.id.scroll1);
 		text = (TextView) findViewById(R.id.textView1);
+
+		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+        
+        if (mChart == null) {
+        	
+        	for(int i = 0; i < numberOfPoint; i++)
+        	{
+        		xArray.add(i + 1);
+        		yArray.add((float) i);
+        	}
+            initChart();
+            addSampleData();
+            mChart = ChartFactory.getLineChartView(this, mDataset, mRenderer);
+                    
+            layout.addView(mChart);
+        } else {
+            mChart.repaint();
+        }
+        
+        
+        timer = new Timer(true);
+
+    	timer.scheduleAtFixedRate(new RemindTask(), 0, 30);
+        
 	
+    	
         //final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
@@ -223,7 +307,7 @@ public class MainActivity extends Activity {
 							            updateConsole("Sending to Cloud Server...");						            
 					                	
 										HttpClient client = new DefaultHttpClient();  
-										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxData;
+										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxxData;
 										HttpGet get = new HttpGet(getURL);
 										try {
 											HttpResponse responseGet = client.execute(get);
