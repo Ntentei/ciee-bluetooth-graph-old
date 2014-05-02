@@ -363,7 +363,7 @@ public class MainActivity extends Activity {
             		                                });
             					                	
             										HttpClient client = new DefaultHttpClient();  
-            										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxxData;
+            										String getURL = "http://10.3.0.1/newevent.php?deviceid=6635&value=" + xxxData;
             										HttpGet get = new HttpGet(getURL);
             										try {
             											HttpResponse responseGet = client.execute(get);
@@ -385,12 +385,14 @@ public class MainActivity extends Activity {
             					            //GUI update
             			                	Log.e("DATA", xData +  "<--------------- Data"); //sample output: 01810xxxx
             			                	
+            			                	/*
     							            runOnUiThread(new Runnable() {
     		                                    public void run() {
     		                                    	Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
     		                                    	updateConsole(xxxData + "<--------------- Data");
     		                                    }
     		                                });
+    		                                */
             			                	
             			                	           			                	
             			                    yArray.remove(0);
@@ -405,12 +407,14 @@ public class MainActivity extends Activity {
             			                    	
             			                    
 	                                    	Log.e("XXX", Float.toString(aValue ) + "<--------------- Value" );
+	                                    	/*
     							            runOnUiThread(new Runnable() {
     		                                    public void run() {
     		                                    	updateConsole(Float.toString(aValue) + "<--------------- Value");
 
     		                                    }
     		                                });
+    		                                */
             			                    
     							            Log.e("XXX", "**************END******************");
     							            
