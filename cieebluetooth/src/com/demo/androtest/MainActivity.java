@@ -62,6 +62,7 @@ public class MainActivity extends Activity {
 	ScrollView scroll;
 	String xData;
 	String xxxData;
+	float aValue;
 	
 	int numberOfPoint = 100;
 	
@@ -167,209 +168,307 @@ public class MainActivity extends Activity {
             		(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         } else {
             mChart.repaint();
-        }
+        }  	
         
+        Thread one = new Thread() {
+            public void run() {
+            	
+                try {
+                	
+                	Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+                	
+                    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    
+                    if (mBluetoothAdapter == null) {
+                    	
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                            	updateConsole("NO BLUETOOTH DEVICE ON-BOARD");
+                            }
+                        });
+                        
+                        return;
+                    }
+                    else
+                    {
+                    	Log.e("STATE", "Bluetooth initiated");
+                    	
+                    	runOnUiThread(new Runnable() {
+                            public void run() {
+                            	updateConsole("Bluetooth initiated");
+                            }
+                        });
+                        
+                    	
+                    	if (!mBluetoothAdapter.isEnabled())
+                    	{
+                    		Log.e("STATE", "Bluetooth not enabled");
+                    		    	runOnUiThread(new Runnable() {
+                                public void run() {
+                                	updateConsole("Bluetooth not enabled");
+                                }
+                            });
+
+                    		
+                    	    if(!mBluetoothAdapter.isEnabled())
+                    	    {
+                    	        Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    	        startActivity(i);
+                    	    }
+                    	}
+                    	
+                    	{
+
+                    		Log.e("STATE", "Bluetooth enabled");
+                    		runOnUiThread(new Runnable() {
+                                public void run() {
+                                	updateConsole("Bluetooth enabled");
+                                }
+                            });
+                    		       		
+                    	    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                    	        		
+                    		// If there are paired devices
+                    		if (pairedDevices.size() > 0) {
+                    	
+                    			Log.e("STATE", "Paired device(s) found");
+                    			
+                    			runOnUiThread(new Runnable() {
+                                    public void run() {
+                                    	updateConsole("Paired device(s) found");
+                                    }
+                                });
+                    			
+                    			BluetoothDevice xDevice = null;
+                    			
+                    		    for (BluetoothDevice device : pairedDevices) {
+                    		        
+                    		        setTitle(device.getName() + " | " + device.getAddress());
+                    		        xDevice = device;
+                    		    }
+                    		    
+                    		    BluetoothSocket btSocket = null;
+            					try {
+            						btSocket = xDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+            					} catch (IOException e) {
+            						e.printStackTrace();
+            					}
+
+            					Log.e("STATE", "Socket created");
+            					
+                    			runOnUiThread(new Runnable() {
+                                    public void run() {
+                                    	updateConsole("Socket created");
+                                    }
+                                });
+                    		    
+                    		    try {
+            						btSocket.connect();
+            					} catch (IOException e) {
+            						e.printStackTrace();
+            					}
+                    		    
+                    		    Log.e("STATE", "Socket connected");
+                    		    
+                    			runOnUiThread(new Runnable() {
+                                    public void run() {
+                                    	updateConsole("Socket connected");
+                                    }
+                                });
+                    		    
+                    		    InputStream input = null;
+            					try {
+            						input = btSocket.getInputStream();
+            					} catch (IOException e) {
+            						e.printStackTrace();
+            					}
+            					
+            					Log.e("STATE", "InputStream acquired");
+            					
+                    			runOnUiThread(new Runnable() {
+                                    public void run() {
+                                    	updateConsole("InputStream acquired");
+                                    }
+                                });
+            					
+            		            int read = 0;
+            		            byte[] singleChar = new byte[1];
+            		            
+            		            
+            		            do
+            		            {
+            		                try
+            		                {
+            		                	read = input.read(singleChar, 0, 1);
+            		                	String data = new String(singleChar, 0, read);
+            		                	
+            		                	Log.e("METADATA", data);
+            		                	           		                	
+            		                	if(data.equals("~"))
+            		                	{
+            		                		xData = "";
+            		                		
+            		                		Log.e("XXX", "**************BEGIN****************");
+            		                		
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            		                		
+            			                	read = input.read(singleChar, 0, 1);
+            			                	data = new String(singleChar, 0, read);
+            			                	xData += data;
+            			                	
+            			                	xxxData = xData;
+            			                	
+            					            //send data to database
+            					            Thread thread = new Thread()
+            					            {
+            					                @Override
+            					                public void run() {
+            					                    
+            							            Log.e("MSG", "Start HTTP GET in a new thread");
+
+            							            runOnUiThread(new Runnable() {
+            		                                    public void run() {
+            		                                    	updateConsole("Sending to Cloud Server...");
+            		                                    }
+            		                                });
+            					                	
+            										HttpClient client = new DefaultHttpClient();  
+            										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxxData;
+            										HttpGet get = new HttpGet(getURL);
+            										try {
+            											HttpResponse responseGet = client.execute(get);
+            										    HttpEntity resEntityGet = responseGet.getEntity();  
+            										    if (resEntityGet != null) {  
+            										        String response = EntityUtils.toString(resEntityGet);
+            										        Log.e("GET RESPONSE", response);
+            										    }
+            										} catch (ClientProtocolException e) {
+            											e.printStackTrace();
+            										} catch (IOException e) {
+            											e.printStackTrace();
+            										}
+            					                }
+            					            };
+            					            
+            					            //thread.start();
+            			                	
+            					            //GUI update
+            			                	Log.e("DATA", xData +  "<--------------- Data"); //sample output: 01810xxxx
+            			                	
+    							            runOnUiThread(new Runnable() {
+    		                                    public void run() {
+    		                                    	Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+    		                                    	updateConsole(xxxData + "<--------------- Data");
+    		                                    }
+    		                                });
+            			                	
+            			                	           			                	
+            			                    yArray.remove(0);
+            			                    //if(xData.length()==9) 
+            			                    {
+            			                    	xData = xData.substring(0, 5);
+                			                    aValue = (Float.parseFloat(xData))/100.0f;
+                			                    yArray.add( aValue );
+            			                    }
+            			                    //else
+            			                    //	Log.e("XXX", "xxxxxxxxx WRONG xxxxxxxxx" );
+            			                    	
+            			                    
+	                                    	Log.e("XXX", Float.toString(aValue ) + "<--------------- Value" );
+    							            runOnUiThread(new Runnable() {
+    		                                    public void run() {
+    		                                    	updateConsole(Float.toString(aValue) + "<--------------- Value");
+
+    		                                    }
+    		                                });
+            			                    
+    							            Log.e("XXX", "**************END******************");
+    							            
+    							            
+            			                    
+            			                    mCurrentSeries.clear();
+            			                    
+            			                    for(int i = 0; i < numberOfPoint; i++)
+            			                    {
+            			                    	mCurrentSeries.add(xArray.get(i), yArray.get(i));  
+            			                    }
+            			                    
+            			                    mChart.repaint();
+            			                    
+            			                				                	
+
+            		                	}
+
+            		                }
+            		                catch(Exception ex)
+            		                {
+            		                    read = -1;
+            		                }
+            		            }
+            		            while (read > 0);
+            		         
+                    		}
+                    		else
+                    		{
+                    			Log.e("STATE", "No paired device(s)");
+                    			
+					            runOnUiThread(new Runnable() {
+                                    public void run() {
+                                    	updateConsole("No paired device(s)");
+                                    }
+                                });
+                    		}
+                    		
+                    		
+                    	}
+                    	
+                    	
+                    	
+                    	
+                    }
+                    
+                	
+                	
+
+                } catch(Exception v) {
+                    System.out.println(v);
+                }
+            }  
+        };
         
-        timer = new Timer(true);
-    	timer.scheduleAtFixedRate(new RemindTask(), 0, 30);
-    	
-        timer2 = new Timer(true);
-    	timer2.scheduleAtFixedRate(new RemindTask2(), 0, 500);
-    	
-        //final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        one.start();
         
-        if (mBluetoothAdapter == null) {
-        	Log.e("STATE", "NO BLUETOOTH DEVICE ON-BOARD");
-        	updateConsole( "NO BLUETOOTH DEVICE ON-BOARD") ;
-            return;
-        }
-        else
-        {
-        	Log.e("STATE", "Bluetooth initiated");
-        	updateConsole("Bluetooth initiated") ;
-        	
-        	if (!mBluetoothAdapter.isEnabled())
-        	{
-        		Log.e("STATE", "Bluetooth not enabled");
-        		updateConsole("Bluetooth not enabled") ;
-        		
-        	    if(!mBluetoothAdapter.isEnabled())
-        	    {
-        	        Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        	        startActivity(i);
-        	    }
-        	}
-        	
-        	{
 
-        		Log.e("STATE", "Bluetooth enabled");
-        		updateConsole("Bluetooth enabled");
-        		       		
-        	    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        	        		
-        		// If there are paired devices
-        		if (pairedDevices.size() > 0) {
-        	
-        			Log.e("STATE", "Paired device(s) found");
-        			updateConsole("Paired device(s) found");
-        			
-        			BluetoothDevice xDevice = null;
-        			
-        		    for (BluetoothDevice device : pairedDevices) {
-        		        
-        		        setTitle(device.getName() + " | " + device.getAddress());
-        		        xDevice = device;
-        		    }
-        		    
-        		    BluetoothSocket btSocket = null;
-					try {
-						btSocket = xDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					Log.e("STATE", "Socket created");
-					updateConsole("Socket created");
-        		    
-        		    try {
-						btSocket.connect();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-        		    
-        		    Log.e("STATE", "Socket connected");
-        		    updateConsole("Socket connected");
-        		    
-        		    InputStream input = null;
-					try {
-						input = btSocket.getInputStream();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-					Log.e("STATE", "InputStream acquired");
-					updateConsole("InputStream acquired");
-					
-		            int read = 0;
-		            byte[] singleChar = new byte[1];
-		            
-		            
-		            do
-		            {
-		                try
-		                {
-		                	read = input.read(singleChar, 0, 1);
-		                	String data = new String(singleChar, 0, read);
-		                	
-		                	Log.e("METADATA", data);
-		                	updateConsole(data);
-		                	
-		                	if(data.equals("~"))
-		                	{
-		                		xData = "";
-		                		
-		                		Log.e("XXX", "**************BEGIN****************");
-		                		
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-		                		
-			                	read = input.read(singleChar, 0, 1);
-			                	data = new String(singleChar, 0, read);
-			                	xData += data;
-			                	
-			                	xxxData = xData;
-			                	
-					            //send data to database
-					            Thread thread = new Thread()
-					            {
-					                @Override
-					                public void run() {
-					                    
-							            Log.e("MSG", "Start HTTP GET in a new thread");
-							            updateConsole("Sending to Cloud Server...");						            
-					                	
-										HttpClient client = new DefaultHttpClient();  
-										String getURL = "http://192.168.1.104/newevent.php?deviceid=6635&value=" + xxxData;
-										HttpGet get = new HttpGet(getURL);
-										try {
-											HttpResponse responseGet = client.execute(get);
-										    HttpEntity resEntityGet = responseGet.getEntity();  
-										    if (resEntityGet != null) {  
-										        String response = EntityUtils.toString(resEntityGet);
-										        Log.e("GET RESPONSE", response);
-										    }
-										} catch (ClientProtocolException e) {
-											e.printStackTrace();
-										} catch (IOException e) {
-											e.printStackTrace();
-										}
-					                }
-					            };
-					            
-					            thread.start();
-			                	
-					            //GUI update
-			                	Log.e("DATA", xData); //sample output: 01810xxxx
-			                	updateConsole(xData + "<--------------- Data");
-			                	
-			                	Log.e("XXX", "**************END******************");
-			                				                	
-
-		                	}
-
-		                }
-		                catch(Exception ex)
-		                {
-		                    read = -1;
-		                }
-		            }
-		            while (read > 0);
-		         
-        		}
-        		else
-        		{
-        			Log.e("STATE", "No paired device(s)");
-        			updateConsole("No paired device(s)");
-        		}
-        		
-        		
-        	}
-        	
-        	
-        	
-        	
-        }
-        
        
 	}
 	
