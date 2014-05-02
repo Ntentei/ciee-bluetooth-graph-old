@@ -75,7 +75,8 @@ public class MainActivity extends Activity {
     private XYSeriesRenderer mCurrentRenderer;
     
     Timer timer;
-
+    Timer timer2;
+    int iii = 0;
 	
 	private static int countLines(String str){
 		   String[] lines = str.split("\r\n|\r|\n");
@@ -87,7 +88,7 @@ public class MainActivity extends Activity {
 		String aText = (String) text.getText();
     	
     	int lineNumber = countLines(aText);
-    	if(lineNumber >= 150)
+    	if(lineNumber >= 20)
     		aText = aText.substring(aText.indexOf('\n')+1);
     	
     	aText = aText + "\n" + newLine;
@@ -107,10 +108,8 @@ public class MainActivity extends Activity {
     }
 	
     class RemindTask extends TimerTask {
-
         @Override
         public void run() {
-        	
         	Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
             float zzz = yArray.remove(0);
@@ -124,7 +123,20 @@ public class MainActivity extends Activity {
             }
             
             mChart.repaint();
-
+           
+        }
+    }
+    
+    class RemindTask2 extends TimerTask {
+        @Override
+        public void run() {
+        	
+            runOnUiThread(new Runnable() {
+                public void run() {
+                	updateConsole(Integer.toString(iii++));
+                }
+            });
+        
         }
     }
 
@@ -151,17 +163,18 @@ public class MainActivity extends Activity {
             addSampleData();
             mChart = ChartFactory.getLineChartView(this, mDataset, mRenderer);
                     
-            layout.addView(mChart);
+            layout.addView(mChart, new LayoutParams
+            		(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         } else {
             mChart.repaint();
         }
         
         
         timer = new Timer(true);
-
     	timer.scheduleAtFixedRate(new RemindTask(), 0, 30);
-        
-	
+    	
+        timer2 = new Timer(true);
+    	timer2.scheduleAtFixedRate(new RemindTask2(), 0, 500);
     	
         //final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -173,7 +186,6 @@ public class MainActivity extends Activity {
         }
         else
         {
-
         	Log.e("STATE", "Bluetooth initiated");
         	updateConsole("Bluetooth initiated") ;
         	
